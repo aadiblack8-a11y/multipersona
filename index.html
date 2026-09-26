@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>MultiPersona</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background: #f5f6fa;
+      color: #111;
+    }
+
+    header {
+      background: white;
+      padding: 16px 7%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #eee;
+    }
+
+    button {
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 18px;
+      background: #111;
+      color: white;
+      cursor: pointer;
+    }
+
+    main {
+      max-width: 900px;
+      margin: auto;
+      padding: 50px 20px;
+    }
+
+    .hero {
+      background: white;
+      padding: 40px;
+      border-radius: 20px;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: 38px;
+      margin-bottom: 15px;
+    }
+
+    .hero p {
+      color: #666;
+      margin-bottom: 25px;
+    }
+
+    #userArea {
+      display: none;
+      margin-top: 30px;
+    }
+
+    .user-card {
+      background: white;
+      padding: 25px;
+      border-radius: 15px;
+      margin-top: 20px;
+    }
+
+    .user-card img {
+      width: 60px;
+      height: 60px;
+      border-radius: 50%;
+    }
+
+    .logout {
+      margin-top: 20px;
+      background: #d33;
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <h2>MultiPersona</h2>
+  <button id="loginBtn">Login with Google</button>
+</header>
+
+<main>
+
+  <section class="hero">
+    <h1>MultiPersona</h1>
+
+    <p>
+      Manage your fictional social profiles,
+      conversations and interactions.
+    </p>
+
+    <button id="googleLogin">
+      Continue with Google
+    </button>
+  </section>
+
+  <section id="userArea">
+
+    <div class="user-card">
+
+      <img id="userPhoto" src="" alt="Profile">
+
+      <h2 id="userName"></h2>
+
+      <p id="userEmail"></p>
+
+      <button class="logout" id="logoutBtn">
+        Logout
+      </button>
+
+    </div>
+
+  </section>
+
+</main>
+
+
+<!-- Firebase -->
+
+<script type="module">
+
+  import { initializeApp }
+    from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+
+  import {
+    getAuth,
+    GoogleAuthProvider,
+    signInWithPopup,
+    onAuthStateChanged,
+    signOut
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+
+  import {
+    getFirestore,
+    doc,
+    setDoc,
+    serverTimestamp
+  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
+
+
+  // YOUR FIREBASE CONFIG
+
+  const firebaseConfig = {
+    apiKey: "AIzaSyASqbvzjjeHVWeQSTy_1046Sq-2Gl3blUw",
+    authDomain: "multipersona-efc34.firebaseapp.com",
+    projectId: "multipersona-efc34",
+    storageBucket: "multipersona-efc34.firebasestorage.app",
+    messagingSenderId: "896067414172",
+    appId: "1:896067414172:web:b83cadc58d98869d3fe559",
+    measurementId: "G-J05TYN2F1Q"
+  };
+
+
+  // INITIALIZE FIREBASE
+
+  const app = initializeApp(firebaseConfig);
+
+  const auth = getAuth(app);
+
+  const db = getFirestore(app);
+
+  const provider = new GoogleAuthProvider();
+
+
+  // GOOGLE LOGIN
+
+  async function login() {
+
+    try {
+
+      const result =
+        await signInWithPopup(auth, provider);
+
+      const user = result.user;
+
+      // Save user in Firestore
+
+      await setDoc(
+        doc(db, "users", user.uid),
+        {
+          uid: user.uid,
+          name: user.displayName || "",
+          email: user.email || "",
+          photo: user.photoURL || "",
+          lastLogin: serverTimestamp()
+        },
+        { merge: true }
+      );
+
+      console.log("Login successful");
+
+    } catch (error) {
+
+      console.error(error);
+
+      alert(
+        "Login error: " +
+        error.message
+      );
+    }
+  }
+
+
+  // LOGOUT
+
+  async function logout() {
+
+    try {
+
+      await signOut(auth);
+
+    } catch (error) {
+
+      console.error(error);
+
+    }
+  }
+
+
+  // AUTH STATE
+
+  onAuthStateChanged(auth, (user) => {
+
+    const userArea =
+      document.getElementById("userArea");
+
+    if (user) {
+
+      userArea.style.display = "block";
+
+      document.getElementById("userName")
+        .textContent =
+        user.displayName || "User";
+
+      document.getElementById("userEmail")
+        .textContent =
+        user.email || "";
+
+      document.getElementById("userPhoto")
+        .src =
+        user.photoURL ||
+        "https://via.placeholder.com/60";
+
+      document.getElementById("loginBtn")
+        .textContent = "Logged In";
+
+    } else {
+
+      userArea.style.display = "none";
+
+      document.getElementById("loginBtn")
+        .textContent = "Login with Google";
+
+    }
+
+  });
+
+
+  document
+    .getElementById("googleLogin")
+    .addEventListener("click", login);
+
+
+  document
+    .getElementById("loginBtn")
+    .addEventListener("click", login);
+
+
+  document
+    .getElementById("logoutBtn")
+    .addEventListener("click", logout);
+
+</script>
+
+</body>
+</html>
