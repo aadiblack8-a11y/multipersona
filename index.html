@@ -1,288 +1,947 @@
-<!DOCTYPE html>
+   <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>MultiPersona</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: Arial, sans-serif;
-    }
+<title>MultiPersona</title>
 
-    body {
-      background: #f5f6fa;
-      color: #111;
-    }
+<style>
+*{
+  box-sizing:border-box;
+}
 
-    header {
-      background: white;
-      padding: 16px 7%;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #eee;
-    }
+body{
+  margin:0;
+  font-family:Arial,sans-serif;
+  background:#f3f5f7;
+  color:#111;
+}
 
-    button {
-      border: 0;
-      border-radius: 9px;
-      padding: 12px 18px;
-      background: #111;
-      color: white;
-      cursor: pointer;
-    }
+header{
+  background:#fff;
+  padding:16px 20px;
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  border-bottom:1px solid #ddd;
+  position:sticky;
+  top:0;
+  z-index:10;
+}
 
-    main {
-      max-width: 900px;
-      margin: auto;
-      padding: 50px 20px;
-    }
+.logo{
+  font-size:25px;
+  font-weight:bold;
+}
 
-    .hero {
-      background: white;
-      padding: 40px;
-      border-radius: 20px;
-      text-align: center;
-    }
+button{
+  border:0;
+  border-radius:10px;
+  padding:12px 18px;
+  background:#111;
+  color:white;
+  font-size:15px;
+}
 
-    .hero h1 {
-      font-size: 38px;
-      margin-bottom: 15px;
-    }
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
 
-    .hero p {
-      color: #666;
-      margin-bottom: 25px;
-    }
+.card{
+  background:white;
+  border-radius:20px;
+  padding:25px;
+  margin-bottom:20px;
+  box-shadow:0 4px 20px rgba(0,0,0,.06);
+}
 
-    #userArea {
-      display: none;
-      margin-top: 30px;
-    }
+.hero{
+  text-align:center;
+  padding:45px 20px;
+}
 
-    .user-card {
-      background: white;
-      padding: 25px;
-      border-radius: 15px;
-      margin-top: 20px;
-    }
+.hero h1{
+  font-size:42px;
+  margin:0 0 15px;
+}
 
-    .user-card img {
-      width: 60px;
-      height: 60px;
-      border-radius: 50%;
-    }
+.hero p{
+  color:#666;
+  font-size:17px;
+  line-height:1.5;
+}
 
-    .logout {
-      margin-top: 20px;
-      background: #d33;
-    }
-  </style>
+input,textarea{
+  width:100%;
+  padding:13px;
+  margin:8px 0 14px;
+  border:1px solid #ccc;
+  border-radius:10px;
+  font-size:15px;
+}
+
+textarea{
+  min-height:90px;
+  resize:vertical;
+}
+
+.hidden{
+  display:none!important;
+}
+
+.profile{
+  display:flex;
+  align-items:center;
+  gap:15px;
+}
+
+.avatar{
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  object-fit:cover;
+  background:#ddd;
+}
+
+.persona{
+  border:1px solid #ddd;
+  border-radius:16px;
+  padding:18px;
+  margin-top:15px;
+}
+
+.persona-top{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+
+.persona h3{
+  margin:0;
+}
+
+.persona p{
+  color:#555;
+}
+
+.actions{
+  display:flex;
+  gap:8px;
+  flex-wrap:wrap;
+}
+
+.actions button{
+  background:#f0f0f0;
+  color:#111;
+}
+
+.actions button.active{
+  background:#111;
+  color:#fff;
+}
+
+.small{
+  color:#777;
+  font-size:13px;
+}
+
+.danger{
+  background:#d93025!important;
+  color:white!important;
+}
+
+.section-title{
+  margin-top:0;
+}
+</style>
 </head>
 
 <body>
 
 <header>
-  <h2>MultiPersona</h2>
-  <button id="loginBtn">Login with Google</button>
+
+  <div class="logo">MultiPersona</div>
+
+  <div>
+    <button id="loginBtn">Login with Google</button>
+    <button id="logoutBtn" class="danger hidden">Logout</button>
+  </div>
+
 </header>
 
-<main>
 
-  <section class="hero">
+<div class="container">
+
+  <!-- LOGIN -->
+
+  <section id="loginSection" class="card hero">
+
     <h1>MultiPersona</h1>
 
     <p>
-      Manage your fictional social profiles,
-      conversations and interactions.
+      Create and manage fictional social profiles,
+      followers, likes and interactions.
     </p>
 
-    <button id="googleLogin">
+    <button id="loginMain">
       Continue with Google
     </button>
+
   </section>
 
-  <section id="userArea">
 
-    <div class="user-card">
+  <!-- APP -->
 
-      <img id="userPhoto" src="" alt="Profile">
+  <section id="appSection" class="hidden">
 
-      <h2 id="userName"></h2>
+    <!-- USER -->
 
-      <p id="userEmail"></p>
+    <div class="card">
 
-      <button class="logout" id="logoutBtn">
-        Logout
+      <div class="profile">
+
+        <img id="userPhoto"
+             class="avatar"
+             src=""
+             alt="User">
+
+        <div>
+          <h3 id="userName">User</h3>
+          <div id="userEmail" class="small"></div>
+        </div>
+
+      </div>
+
+    </div>
+
+
+    <!-- CREATE PERSONA -->
+
+    <div class="card">
+
+      <h2 class="section-title">
+        Create Fictional Persona
+      </h2>
+
+      <input
+        id="personaName"
+        placeholder="Persona name">
+
+      <input
+        id="personaUsername"
+        placeholder="@username">
+
+      <input
+        id="personaPhoto"
+        placeholder="Profile photo URL (optional)">
+
+      <textarea
+        id="personaBio"
+        placeholder="Persona bio"></textarea>
+
+      <button id="createPersona">
+        + Create Persona
       </button>
+
+    </div>
+
+
+    <!-- PERSONAS -->
+
+    <div class="card">
+
+      <h2 class="section-title">
+        Personas
+      </h2>
+
+      <div id="personasList">
+        Loading...
+      </div>
 
     </div>
 
   </section>
 
-</main>
+</div>
 
-
-<!-- Firebase -->
 
 <script type="module">
 
-  import { initializeApp }
-    from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
+import {
+  initializeApp
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-app.js";
 
-  import {
-    getAuth,
-    GoogleAuthProvider,
-    signInWithPopup,
-    onAuthStateChanged,
-    signOut
-  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
+import {
+  getAuth,
+  GoogleAuthProvider,
+  signInWithPopup,
+  onAuthStateChanged,
+  signOut
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-auth.js";
 
-  import {
-    getFirestore,
-    doc,
-    setDoc,
-    serverTimestamp
-  } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
-
-
-  // YOUR FIREBASE CONFIG
-
-  const firebaseConfig = {
-    apiKey: "AIzaSyASqbvzjjeHVWeQSTy_1046Sq-2Gl3blUw",
-    authDomain: "multipersona-efc34.firebaseapp.com",
-    projectId: "multipersona-efc34",
-    storageBucket: "multipersona-efc34.firebasestorage.app",
-    messagingSenderId: "896067414172",
-    appId: "1:896067414172:web:b83cadc58d98869d3fe559",
-    measurementId: "G-J05TYN2F1Q"
-  };
+import {
+  getFirestore,
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  setDoc,
+  deleteDoc,
+  serverTimestamp
+} from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
-  // INITIALIZE FIREBASE
+/* FIREBASE */
 
-  const app = initializeApp(firebaseConfig);
+const firebaseConfig = {
 
-  const auth = getAuth(app);
+  apiKey:
+  "AIzaSyASqbvzjjeHVWeQSTy_1046Sq-2Gl3blUw",
 
-  const db = getFirestore(app);
+  authDomain:
+  "multipersona-efc34.firebaseapp.com",
 
-  const provider = new GoogleAuthProvider();
+  projectId:
+  "multipersona-efc34",
+
+  storageBucket:
+  "multipersona-efc34.firebasestorage.app",
+
+  messagingSenderId:
+  "896067414172",
+
+  appId:
+  "1:896067414172:web:b83cadc58d98869d3fe559",
+
+  measurementId:
+  "G-J05TYN2F1Q"
+};
 
 
-  // GOOGLE LOGIN
+const app = initializeApp(firebaseConfig);
 
-  async function login() {
+const auth = getAuth(app);
 
-    try {
+const db = getFirestore(app);
 
-      const result =
-        await signInWithPopup(auth, provider);
+const provider = new GoogleAuthProvider();
 
-      const user = result.user;
 
-      // Save user in Firestore
+/* ELEMENTS */
+
+const loginSection =
+document.getElementById("loginSection");
+
+const appSection =
+document.getElementById("appSection");
+
+const loginBtn =
+document.getElementById("loginBtn");
+
+const loginMain =
+document.getElementById("loginMain");
+
+const logoutBtn =
+document.getElementById("logoutBtn");
+
+const userPhoto =
+document.getElementById("userPhoto");
+
+const userName =
+document.getElementById("userName");
+
+const userEmail =
+document.getElementById("userEmail");
+
+const personasList =
+document.getElementById("personasList");
+
+
+/* LOGIN */
+
+async function login(){
+
+  try{
+
+    await signInWithPopup(
+      auth,
+      provider
+    );
+
+  }catch(error){
+
+    console.error(error);
+
+    alert(
+      "Login error: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* LOGOUT */
+
+async function logout(){
+
+  try{
+
+    await signOut(auth);
+
+  }catch(error){
+
+    alert(
+      "Logout error: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* AUTH STATE */
+
+onAuthStateChanged(
+  auth,
+  async(user)=>{
+
+    if(user){
+
+      loginSection.classList.add("hidden");
+
+      appSection.classList.remove("hidden");
+
+      loginBtn.classList.add("hidden");
+
+      logoutBtn.classList.remove("hidden");
+
+      userName.textContent =
+        user.displayName || "User";
+
+      userEmail.textContent =
+        user.email || "";
+
+      userPhoto.src =
+        user.photoURL || "";
+
+      /* SAVE USER */
 
       await setDoc(
-        doc(db, "users", user.uid),
+        doc(db,"users",user.uid),
         {
-          uid: user.uid,
-          name: user.displayName || "",
-          email: user.email || "",
-          photo: user.photoURL || "",
-          lastLogin: serverTimestamp()
+          uid:user.uid,
+          name:user.displayName || "",
+          email:user.email || "",
+          photo:user.photoURL || "",
+          lastLogin:serverTimestamp()
         },
-        { merge: true }
+        {merge:true}
       );
 
-      console.log("Login successful");
+      loadPersonas();
 
-    } catch (error) {
+    }else{
+
+      loginSection.classList.remove("hidden");
+
+      appSection.classList.add("hidden");
+
+      loginBtn.classList.remove("hidden");
+
+      logoutBtn.classList.add("hidden");
+
+    }
+
+  }
+);
+
+
+/* CREATE PERSONA */
+
+document
+.getElementById("createPersona")
+.addEventListener(
+  "click",
+  async()=>{
+
+    const user = auth.currentUser;
+
+    if(!user){
+
+      alert("Please login first.");
+
+      return;
+    }
+
+    const name =
+      document
+      .getElementById("personaName")
+      .value.trim();
+
+    const username =
+      document
+      .getElementById("personaUsername")
+      .value.trim();
+
+    const photo =
+      document
+      .getElementById("personaPhoto")
+      .value.trim();
+
+    const bio =
+      document
+      .getElementById("personaBio")
+      .value.trim();
+
+
+    if(!name || !username){
+
+      alert(
+        "Persona name aur username required hai."
+      );
+
+      return;
+    }
+
+
+    try{
+
+      await addDoc(
+        collection(db,"personas"),
+        {
+
+          name:name,
+
+          username:username,
+
+          photo:photo,
+
+          bio:bio,
+
+          ownerId:user.uid,
+
+          createdAt:serverTimestamp()
+
+        }
+      );
+
+
+      document
+      .getElementById("personaName")
+      .value="";
+
+      document
+      .getElementById("personaUsername")
+      .value="";
+
+      document
+      .getElementById("personaPhoto")
+      .value="";
+
+      document
+      .getElementById("personaBio")
+      .value="";
+
+
+      alert("Persona created ✅");
+
+      loadPersonas();
+
+    }catch(error){
 
       console.error(error);
 
       alert(
-        "Login error: " +
+        "Create error: " +
         error.message
       );
+
     }
+
+  }
+);
+
+
+/* LOAD PERSONAS */
+
+async function loadPersonas(){
+
+  try{
+
+    const snapshot =
+      await getDocs(
+        collection(db,"personas")
+      );
+
+    personasList.innerHTML="";
+
+
+    if(snapshot.empty){
+
+      personasList.innerHTML =
+        "<p>No personas yet.</p>";
+
+      return;
+    }
+
+
+    snapshot.forEach(
+      (personaDoc)=>{
+
+        const data =
+          personaDoc.data();
+
+        const id =
+          personaDoc.id;
+
+
+        const div =
+          document.createElement("div");
+
+        div.className="persona";
+
+
+        const photo =
+          data.photo ||
+          "https://via.placeholder.com/65";
+
+
+        div.innerHTML=`
+
+          <div class="persona-top">
+
+            <img
+              class="avatar"
+              src="${photo}"
+              onerror="this.src='https://via.placeholder.com/65'"
+            >
+
+            <div>
+
+              <h3>
+                ${escapeHTML(data.name || "Unnamed")}
+              </h3>
+
+              <div class="small">
+                ${escapeHTML(data.username || "")}
+              </div>
+
+            </div>
+
+          </div>
+
+          <p>
+            ${escapeHTML(data.bio || "No bio")}
+          </p>
+
+          <div class="actions">
+
+            <button
+              class="likeBtn"
+              data-id="${id}">
+              ❤️ Like
+            </button>
+
+            <button
+              class="followBtn"
+              data-id="${id}">
+              + Follow
+            </button>
+
+            ${
+              data.ownerId === auth.currentUser.uid
+              ?
+              `<button
+                class="deleteBtn danger"
+                data-id="${id}">
+                Delete
+              </button>`
+              :
+              ""
+            }
+
+          </div>
+
+        `;
+
+
+        personasList.appendChild(div);
+
+      }
+    );
+
+
+    /* LIKE BUTTONS */
+
+    document
+    .querySelectorAll(".likeBtn")
+    .forEach(
+      btn=>{
+
+        btn.addEventListener(
+          "click",
+          ()=>toggleLike(
+            btn.dataset.id,
+            btn
+          )
+        );
+
+      }
+    );
+
+
+    /* FOLLOW BUTTONS */
+
+    document
+    .querySelectorAll(".followBtn")
+    .forEach(
+      btn=>{
+
+        btn.addEventListener(
+          "click",
+          ()=>toggleFollow(
+            btn.dataset.id,
+            btn
+          )
+        );
+
+      }
+    );
+
+
+    /* DELETE */
+
+    document
+    .querySelectorAll(".deleteBtn")
+    .forEach(
+      btn=>{
+
+        btn.addEventListener(
+          "click",
+          ()=>deletePersona(
+            btn.dataset.id
+          )
+        );
+
+      }
+    );
+
+
+  }catch(error){
+
+    console.error(error);
+
+    personasList.innerHTML =
+      "<p>Personas load nahi ho paayi.</p>";
+
+  }
+
+}
+
+
+/* LIKE */
+
+async function toggleLike(
+  personaId,
+  button
+){
+
+  const user =
+    auth.currentUser;
+
+  if(!user)return;
+
+
+  const likeRef =
+    doc(
+      db,
+      "personas",
+      personaId,
+      "likes",
+      user.uid
+    );
+
+
+  try{
+
+    if(button.classList.contains("active")){
+
+      await deleteDoc(likeRef);
+
+      button.classList.remove("active");
+
+      button.textContent =
+        "❤️ Like";
+
+    }else{
+
+      await setDoc(
+        likeRef,
+        {
+          userId:user.uid,
+          createdAt:serverTimestamp()
+        }
+      );
+
+      button.classList.add("active");
+
+      button.textContent =
+        "❤️ Liked";
+
+    }
+
+  }catch(error){
+
+    alert(
+      "Like error: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* FOLLOW */
+
+async function toggleFollow(
+  personaId,
+  button
+){
+
+  const user =
+    auth.currentUser;
+
+  if(!user)return;
+
+
+  const followRef =
+    doc(
+      db,
+      "personas",
+      personaId,
+      "followers",
+      user.uid
+    );
+
+
+  try{
+
+    if(button.classList.contains("active")){
+
+      await deleteDoc(followRef);
+
+      button.classList.remove("active");
+
+      button.textContent =
+        "+ Follow";
+
+    }else{
+
+      await setDoc(
+        followRef,
+        {
+          userId:user.uid,
+          createdAt:serverTimestamp()
+        }
+      );
+
+      button.classList.add("active");
+
+      button.textContent =
+        "✓ Following";
+
+    }
+
+  }catch(error){
+
+    alert(
+      "Follow error: " +
+      error.message
+    );
+
+  }
+
+}
+
+
+/* DELETE PERSONA */
+
+async function deletePersona(
+  personaId
+){
+
+  if(
+    !confirm(
+      "Is persona ko delete karna hai?"
+    )
+  ){
+    return;
   }
 
 
-  // LOGOUT
+  try{
 
-  async function logout() {
+    await deleteDoc(
+      doc(
+        db,
+        "personas",
+        personaId
+      )
+    );
 
-    try {
+    loadPersonas();
 
-      await signOut(auth);
+  }catch(error){
 
-    } catch (error) {
+    alert(
+      "Delete error: " +
+      error.message
+    );
 
-      console.error(error);
-
-    }
   }
 
-
-  // AUTH STATE
-
-  onAuthStateChanged(auth, (user) => {
-
-    const userArea =
-      document.getElementById("userArea");
-
-    if (user) {
-
-      userArea.style.display = "block";
-
-      document.getElementById("userName")
-        .textContent =
-        user.displayName || "User";
-
-      document.getElementById("userEmail")
-        .textContent =
-        user.email || "";
-
-      document.getElementById("userPhoto")
-        .src =
-        user.photoURL ||
-        "https://via.placeholder.com/60";
-
-      document.getElementById("loginBtn")
-        .textContent = "Logged In";
-
-    } else {
-
-      userArea.style.display = "none";
-
-      document.getElementById("loginBtn")
-        .textContent = "Login with Google";
-
-    }
-
-  });
+}
 
 
-  document
-    .getElementById("googleLogin")
-    .addEventListener("click", login);
+/* SECURITY: ESCAPE HTML */
+
+function escapeHTML(value){
+
+  return String(value)
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+
+}
 
 
-  document
-    .getElementById("loginBtn")
-    .addEventListener("click", login);
+/* BUTTONS */
 
+loginBtn.addEventListener(
+  "click",
+  login
+);
 
-  document
-    .getElementById("logoutBtn")
-    .addEventListener("click", logout);
+loginMain.addEventListener(
+  "click",
+  login
+);
+
+logoutBtn.addEventListener(
+  "click",
+  logout
+);
 
 </script>
 
 </body>
-</html>
+  </html>
