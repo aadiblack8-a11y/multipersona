@@ -1,160 +1,137 @@
-   <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <title>MultiPersona</title>
 
 <style>
-*{
-  box-sizing:border-box;
-}
-
+*{box-sizing:border-box}
 body{
   margin:0;
   font-family:Arial,sans-serif;
-  background:#f3f5f7;
+  background:#f4f6f8;
   color:#111;
 }
-
 header{
-  background:#fff;
-  padding:16px 20px;
+  background:#111;
+  color:white;
+  padding:16px;
   display:flex;
   justify-content:space-between;
   align-items:center;
-  border-bottom:1px solid #ddd;
   position:sticky;
   top:0;
   z-index:10;
 }
-
-.logo{
-  font-size:25px;
-  font-weight:bold;
-}
-
+header h2{margin:0}
 button{
   border:0;
   border-radius:10px;
-  padding:12px 18px;
-  background:#111;
-  color:white;
-  font-size:15px;
+  padding:11px 15px;
+  cursor:pointer;
+  font-weight:bold;
 }
-
+.primary{background:#111;color:white}
+.red{background:#d33;color:white}
+.white{background:white;color:#111}
 .container{
-  max-width:900px;
+  max-width:850px;
   margin:auto;
   padding:20px;
 }
-
 .card{
   background:white;
-  border-radius:20px;
-  padding:25px;
-  margin-bottom:20px;
-  box-shadow:0 4px 20px rgba(0,0,0,.06);
+  border-radius:18px;
+  padding:20px;
+  margin-bottom:18px;
+  box-shadow:0 3px 15px #00000012;
 }
-
-.hero{
-  text-align:center;
-  padding:45px 20px;
-}
-
-.hero h1{
-  font-size:42px;
-  margin:0 0 15px;
-}
-
-.hero p{
-  color:#666;
-  font-size:17px;
-  line-height:1.5;
-}
-
 input,textarea{
   width:100%;
   padding:13px;
-  margin:8px 0 14px;
-  border:1px solid #ccc;
+  margin:7px 0 12px;
+  border:1px solid #ddd;
   border-radius:10px;
-  font-size:15px;
+  font-size:16px;
 }
-
-textarea{
-  min-height:90px;
-  resize:vertical;
+textarea{min-height:100px;resize:vertical}
+.avatar{
+  width:70px;
+  height:70px;
+  border-radius:50%;
+  object-fit:cover;
 }
-
-.hidden{
-  display:none!important;
+.bigAvatar{
+  width:100px;
+  height:100px;
+  border-radius:50%;
+  object-fit:cover;
 }
-
-.profile{
+.row{
   display:flex;
   align-items:center;
   gap:15px;
 }
-
-.avatar{
-  width:65px;
-  height:65px;
-  border-radius:50%;
-  object-fit:cover;
-  background:#ddd;
-}
-
-.persona{
-  border:1px solid #ddd;
-  border-radius:16px;
-  padding:18px;
-  margin-top:15px;
-}
-
-.persona-top{
-  display:flex;
-  align-items:center;
-  gap:12px;
-}
-
-.persona h3{
-  margin:0;
-}
-
-.persona p{
-  color:#555;
-}
-
 .actions{
   display:flex;
   gap:8px;
   flex-wrap:wrap;
+  margin-top:12px;
 }
-
-.actions button{
-  background:#f0f0f0;
-  color:#111;
+.hidden{display:none!important}
+.muted{color:#777}
+.hero{
+  text-align:center;
+  padding:50px 20px;
 }
-
-.actions button.active{
+.hero h1{font-size:42px;margin:10px}
+.persona{
+  display:flex;
+  gap:15px;
+  align-items:flex-start;
+}
+.persona img{
+  width:65px;
+  height:65px;
+  border-radius:50%;
+  object-fit:cover;
+}
+.chatBox{
+  height:350px;
+  overflow-y:auto;
+  border:1px solid #ddd;
+  border-radius:12px;
+  padding:12px;
+  background:#fafafa;
+}
+.msg{
+  padding:10px 13px;
+  border-radius:15px;
+  margin:7px 0;
+  max-width:80%;
+}
+.me{
   background:#111;
-  color:#fff;
+  color:white;
+  margin-left:auto;
 }
-
-.small{
-  color:#777;
-  font-size:13px;
+.personaMsg{
+  background:#e7e7e7;
 }
-
-.danger{
-  background:#d93025!important;
-  color:white!important;
+nav{
+  display:flex;
+  gap:8px;
+  overflow:auto;
+  padding:10px 0;
 }
-
-.section-title{
-  margin-top:0;
+nav button{white-space:nowrap}
+.badge{
+  display:inline-block;
+  padding:4px 8px;
+  background:#eee;
+  border-radius:20px;
+  font-size:12px;
 }
 </style>
 </head>
@@ -162,109 +139,147 @@ textarea{
 <body>
 
 <header>
-
-  <div class="logo">MultiPersona</div>
-
-  <div>
-    <button id="loginBtn">Login with Google</button>
-    <button id="logoutBtn" class="danger hidden">Logout</button>
-  </div>
-
+  <h2>MultiPersona</h2>
+  <button id="logoutBtn" class="red hidden">Logout</button>
 </header>
 
-
-<div class="container">
+<div id="app">
 
   <!-- LOGIN -->
-
-  <section id="loginSection" class="card hero">
-
-    <h1>MultiPersona</h1>
-
-    <p>
-      Create and manage fictional social profiles,
-      followers, likes and interactions.
-    </p>
-
-    <button id="loginMain">
-      Continue with Google
-    </button>
-
+  <section id="loginScreen" class="hero">
+    <div class="card">
+      <h1>MultiPersona</h1>
+      <p class="muted">
+        Create and interact with fictional social personas.
+      </p>
+      <button id="loginBtn" class="primary">
+        Continue with Google
+      </button>
+    </div>
   </section>
 
+  <!-- MAIN -->
+  <section id="mainScreen" class="container hidden">
 
-  <!-- APP -->
+    <nav>
+      <button class="primary" onclick="showPage('feed')">Feed</button>
+      <button class="white" onclick="showPage('profile')">My Profile</button>
+      <button class="white" onclick="showPage('create')">Create Persona</button>
+    </nav>
 
-  <section id="appSection" class="hidden">
+    <!-- FEED -->
+    <div id="feedPage">
+      <div class="card">
+        <h2>Fictional Personas</h2>
+        <p class="muted">
+          Profiles shown here are fictional.
+        </p>
+      </div>
 
-    <!-- USER -->
+      <div id="personaList"></div>
+    </div>
 
-    <div class="card">
+    <!-- PROFILE -->
+    <div id="profilePage" class="hidden">
 
-      <div class="profile">
+      <div class="card">
+        <h2>My Profile</h2>
 
-        <img id="userPhoto"
-             class="avatar"
-             src=""
-             alt="User">
-
-        <div>
-          <h3 id="userName">User</h3>
-          <div id="userEmail" class="small"></div>
+        <div class="row">
+          <img id="myPhoto" class="bigAvatar">
+          <div>
+            <h3 id="myName"></h3>
+            <p id="myEmail" class="muted"></p>
+            <p id="myUsername"></p>
+          </div>
         </div>
 
+        <hr>
+
+        <label>Username</label>
+        <input id="usernameInput" placeholder="your_username">
+
+        <label>Display name</label>
+        <input id="nameInput" placeholder="Your name">
+
+        <label>Profile photo URL</label>
+        <input id="photoInput" placeholder="https://...">
+
+        <button class="primary" onclick="saveProfile()">
+          Save Profile
+        </button>
       </div>
 
     </div>
 
-
     <!-- CREATE PERSONA -->
+    <div id="createPage" class="hidden">
 
-    <div class="card">
+      <div class="card">
+        <h2>Create Fictional Persona</h2>
 
-      <h2 class="section-title">
-        Create Fictional Persona
-      </h2>
+        <label>Persona name</label>
+        <input id="personaName" placeholder="Example: Alex Nova">
 
-      <input
-        id="personaName"
-        placeholder="Persona name">
+        <label>Username</label>
+        <input id="personaUsername" placeholder="alexnova">
 
-      <input
-        id="personaUsername"
-        placeholder="@username">
+        <label>Photo URL</label>
+        <input id="personaPhoto"
+               placeholder="https://example.com/photo.jpg">
 
-      <input
-        id="personaPhoto"
-        placeholder="Profile photo URL (optional)">
+        <label>Bio</label>
+        <textarea id="personaBio"
+                  placeholder="Write fictional persona bio..."></textarea>
 
-      <textarea
-        id="personaBio"
-        placeholder="Persona bio"></textarea>
-
-      <button id="createPersona">
-        + Create Persona
-      </button>
-
-    </div>
-
-
-    <!-- PERSONAS -->
-
-    <div class="card">
-
-      <h2 class="section-title">
-        Personas
-      </h2>
-
-      <div id="personasList">
-        Loading...
+        <button class="primary" onclick="createPersona()">
+          Create Persona
+        </button>
       </div>
 
     </div>
 
   </section>
 
+</div>
+
+<!-- CHAT MODAL -->
+<div id="chatModal"
+     class="hidden"
+     style="
+       position:fixed;
+       inset:0;
+       background:#0008;
+       z-index:100;
+       padding:20px;
+     ">
+
+  <div class="card"
+       style="
+         max-width:650px;
+         margin:30px auto;
+         max-height:90vh;
+       ">
+
+    <div class="row" style="justify-content:space-between">
+      <div>
+        <h2 id="chatTitle"></h2>
+        <span class="badge">Fictional persona</span>
+      </div>
+
+      <button onclick="closeChat()">✕</button>
+    </div>
+
+    <div id="chatMessages" class="chatBox"></div>
+
+    <div class="row" style="margin-top:10px">
+      <input id="chatInput"
+             placeholder="Write a message..."
+             style="margin:0">
+      <button class="primary" onclick="sendMessage()">Send</button>
+    </div>
+
+  </div>
 </div>
 
 
@@ -284,80 +299,41 @@ import {
 
 import {
   getFirestore,
-  collection,
-  addDoc,
-  getDocs,
   doc,
   setDoc,
-  deleteDoc,
-  serverTimestamp
+  getDoc,
+  addDoc,
+  collection,
+  query,
+  orderBy,
+  onSnapshot,
+  serverTimestamp,
+  getDocs,
+  where,
+  updateDoc,
+  deleteDoc
 } from "https://www.gstatic.com/firebasejs/12.9.0/firebase-firestore.js";
 
 
-/* FIREBASE */
-
 const firebaseConfig = {
-
-  apiKey:
-  "AIzaSyASqbvzjjeHVWeQSTy_1046Sq-2Gl3blUw",
-
-  authDomain:
-  "multipersona-efc34.firebaseapp.com",
-
-  projectId:
-  "multipersona-efc34",
-
-  storageBucket:
-  "multipersona-efc34.firebasestorage.app",
-
-  messagingSenderId:
-  "896067414172",
-
-  appId:
-  "1:896067414172:web:b83cadc58d98869d3fe559",
-
-  measurementId:
-  "G-J05TYN2F1Q"
+  apiKey: "AIzaSyASqbvzjjeHVWeQSTy_1046Sq-2Gl3blUw",
+  authDomain: "multipersona-efc34.firebaseapp.com",
+  projectId: "multipersona-efc34",
+  storageBucket: "multipersona-efc34.firebasestorage.app",
+  messagingSenderId: "896067414172",
+  appId: "1:896067414172:web:b83cadc58d98869d3fe559",
+  measurementId: "G-J05TYN2F1Q"
 };
 
 
 const app = initializeApp(firebaseConfig);
-
 const auth = getAuth(app);
-
 const db = getFirestore(app);
-
 const provider = new GoogleAuthProvider();
 
-
-/* ELEMENTS */
-
-const loginSection =
-document.getElementById("loginSection");
-
-const appSection =
-document.getElementById("appSection");
-
-const loginBtn =
-document.getElementById("loginBtn");
-
-const loginMain =
-document.getElementById("loginMain");
-
-const logoutBtn =
-document.getElementById("logoutBtn");
-
-const userPhoto =
-document.getElementById("userPhoto");
-
-const userName =
-document.getElementById("userName");
-
-const userEmail =
-document.getElementById("userEmail");
-
-const personasList =
-document.getElementById("personasList");
+let currentUser = null;
+let currentPersona = null;
+let unsubscribeChat = null;
 
 
 /* LOGIN */
@@ -366,39 +342,13 @@ async function login(){
 
   try{
 
-    await signInWithPopup(
-      auth,
-      provider
-    );
+    await signInWithPopup(auth,provider);
 
   }catch(error){
 
     console.error(error);
 
-    alert(
-      "Login error: " +
-      error.message
-    );
-
-  }
-
-}
-
-
-/* LOGOUT */
-
-async function logout(){
-
-  try{
-
-    await signOut(auth);
-
-  }catch(error){
-
-    alert(
-      "Logout error: " +
-      error.message
-    );
+    alert("Login error: " + error.message);
 
   }
 
@@ -407,401 +357,365 @@ async function logout(){
 
 /* AUTH STATE */
 
-onAuthStateChanged(
-  auth,
-  async(user)=>{
+onAuthStateChanged(auth, async(user)=>{
 
-    if(user){
+  currentUser = user;
 
-      loginSection.classList.add("hidden");
+  if(user){
 
-      appSection.classList.remove("hidden");
+    document.getElementById("loginScreen")
+      .classList.add("hidden");
 
-      loginBtn.classList.add("hidden");
+    document.getElementById("mainScreen")
+      .classList.remove("hidden");
 
-      logoutBtn.classList.remove("hidden");
+    document.getElementById("logoutBtn")
+      .classList.remove("hidden");
 
-      userName.textContent =
-        user.displayName || "User";
+    await createUserDocument(user);
 
-      userEmail.textContent =
-        user.email || "";
+    await loadProfile();
 
-      userPhoto.src =
-        user.photoURL || "";
+    loadPersonas();
 
-      /* SAVE USER */
+  }else{
 
-      await setDoc(
-        doc(db,"users",user.uid),
-        {
-          uid:user.uid,
-          name:user.displayName || "",
-          email:user.email || "",
-          photo:user.photoURL || "",
-          lastLogin:serverTimestamp()
-        },
-        {merge:true}
-      );
+    document.getElementById("loginScreen")
+      .classList.remove("hidden");
 
-      loadPersonas();
+    document.getElementById("mainScreen")
+      .classList.add("hidden");
 
-    }else{
-
-      loginSection.classList.remove("hidden");
-
-      appSection.classList.add("hidden");
-
-      loginBtn.classList.remove("hidden");
-
-      logoutBtn.classList.add("hidden");
-
-    }
+    document.getElementById("logoutBtn")
+      .classList.add("hidden");
 
   }
-);
 
+});
 
-/* CREATE PERSONA */
 
-document
-.getElementById("createPersona")
-.addEventListener(
-  "click",
-  async()=>{
+/* CREATE USER */
 
-    const user = auth.currentUser;
+async function createUserDocument(user){
 
-    if(!user){
+  const ref = doc(db,"users",user.uid);
 
-      alert("Please login first.");
+  const snap = await getDoc(ref);
 
-      return;
-    }
+  if(!snap.exists()){
 
-    const name =
-      document
-      .getElementById("personaName")
-      .value.trim();
+    await setDoc(ref,{
 
-    const username =
-      document
-      .getElementById("personaUsername")
-      .value.trim();
+      uid:user.uid,
+      name:user.displayName || "",
+      email:user.email || "",
+      photo:user.photoURL || "",
+      username:"",
+      usernameLower:"",
+      createdAt:serverTimestamp()
 
-    const photo =
-      document
-      .getElementById("personaPhoto")
-      .value.trim();
-
-    const bio =
-      document
-      .getElementById("personaBio")
-      .value.trim();
-
-
-    if(!name || !username){
-
-      alert(
-        "Persona name aur username required hai."
-      );
-
-      return;
-    }
-
-
-    try{
-
-      await addDoc(
-        collection(db,"personas"),
-        {
-
-          name:name,
-
-          username:username,
-
-          photo:photo,
-
-          bio:bio,
-
-          ownerId:user.uid,
-
-          createdAt:serverTimestamp()
-
-        }
-      );
-
-
-      document
-      .getElementById("personaName")
-      .value="";
-
-      document
-      .getElementById("personaUsername")
-      .value="";
-
-      document
-      .getElementById("personaPhoto")
-      .value="";
-
-      document
-      .getElementById("personaBio")
-      .value="";
-
-
-      alert("Persona created ✅");
-
-      loadPersonas();
-
-    }catch(error){
-
-      console.error(error);
-
-      alert(
-        "Create error: " +
-        error.message
-      );
-
-    }
-
-  }
-);
-
-
-/* LOAD PERSONAS */
-
-async function loadPersonas(){
-
-  try{
-
-    const snapshot =
-      await getDocs(
-        collection(db,"personas")
-      );
-
-    personasList.innerHTML="";
-
-
-    if(snapshot.empty){
-
-      personasList.innerHTML =
-        "<p>No personas yet.</p>";
-
-      return;
-    }
-
-
-    snapshot.forEach(
-      (personaDoc)=>{
-
-        const data =
-          personaDoc.data();
-
-        const id =
-          personaDoc.id;
-
-
-        const div =
-          document.createElement("div");
-
-        div.className="persona";
-
-
-        const photo =
-          data.photo ||
-          "https://via.placeholder.com/65";
-
-
-        div.innerHTML=`
-
-          <div class="persona-top">
-
-            <img
-              class="avatar"
-              src="${photo}"
-              onerror="this.src='https://via.placeholder.com/65'"
-            >
-
-            <div>
-
-              <h3>
-                ${escapeHTML(data.name || "Unnamed")}
-              </h3>
-
-              <div class="small">
-                ${escapeHTML(data.username || "")}
-              </div>
-
-            </div>
-
-          </div>
-
-          <p>
-            ${escapeHTML(data.bio || "No bio")}
-          </p>
-
-          <div class="actions">
-
-            <button
-              class="likeBtn"
-              data-id="${id}">
-              ❤️ Like
-            </button>
-
-            <button
-              class="followBtn"
-              data-id="${id}">
-              + Follow
-            </button>
-
-            ${
-              data.ownerId === auth.currentUser.uid
-              ?
-              `<button
-                class="deleteBtn danger"
-                data-id="${id}">
-                Delete
-              </button>`
-              :
-              ""
-            }
-
-          </div>
-
-        `;
-
-
-        personasList.appendChild(div);
-
-      }
-    );
-
-
-    /* LIKE BUTTONS */
-
-    document
-    .querySelectorAll(".likeBtn")
-    .forEach(
-      btn=>{
-
-        btn.addEventListener(
-          "click",
-          ()=>toggleLike(
-            btn.dataset.id,
-            btn
-          )
-        );
-
-      }
-    );
-
-
-    /* FOLLOW BUTTONS */
-
-    document
-    .querySelectorAll(".followBtn")
-    .forEach(
-      btn=>{
-
-        btn.addEventListener(
-          "click",
-          ()=>toggleFollow(
-            btn.dataset.id,
-            btn
-          )
-        );
-
-      }
-    );
-
-
-    /* DELETE */
-
-    document
-    .querySelectorAll(".deleteBtn")
-    .forEach(
-      btn=>{
-
-        btn.addEventListener(
-          "click",
-          ()=>deletePersona(
-            btn.dataset.id
-          )
-        );
-
-      }
-    );
-
-
-  }catch(error){
-
-    console.error(error);
-
-    personasList.innerHTML =
-      "<p>Personas load nahi ho paayi.</p>";
+    });
 
   }
 
 }
 
 
+/* LOAD PROFILE */
+
+async function loadProfile(){
+
+  const snap = await getDoc(
+    doc(db,"users",currentUser.uid)
+  );
+
+  if(!snap.exists()) return;
+
+  const data = snap.data();
+
+  document.getElementById("myName").textContent =
+    data.name || currentUser.displayName || "";
+
+  document.getElementById("myEmail").textContent =
+    data.email || currentUser.email || "";
+
+  document.getElementById("myUsername").textContent =
+    data.username ? "@" + data.username : "Username not set";
+
+  document.getElementById("myPhoto").src =
+    data.photo || currentUser.photoURL || "";
+
+  document.getElementById("usernameInput").value =
+    data.username || "";
+
+  document.getElementById("nameInput").value =
+    data.name || currentUser.displayName || "";
+
+  document.getElementById("photoInput").value =
+    data.photo || currentUser.photoURL || "";
+
+}
+
+
+/* SAVE PROFILE */
+
+window.saveProfile = async function(){
+
+  const username =
+    document.getElementById("usernameInput")
+      .value.trim()
+      .replace(/\s+/g,"");
+
+  const name =
+    document.getElementById("nameInput")
+      .value.trim();
+
+  const photo =
+    document.getElementById("photoInput")
+      .value.trim();
+
+  if(username.length < 3){
+
+    alert("Username minimum 3 characters hona chahiye.");
+
+    return;
+
+  }
+
+  if(!/^[a-zA-Z0-9_]+$/.test(username)){
+
+    alert("Username me sirf letters, numbers aur _ use karo.");
+
+    return;
+
+  }
+
+
+  const usernameLower = username.toLowerCase();
+
+
+  const q = query(
+    collection(db,"users"),
+    where("usernameLower","==",usernameLower)
+  );
+
+  const results = await getDocs(q);
+
+  let taken = false;
+
+  results.forEach((item)=>{
+
+    if(item.id !== currentUser.uid){
+
+      taken = true;
+
+    }
+
+  });
+
+
+  if(taken){
+
+    alert("Ye username already taken hai.");
+
+    return;
+
+  }
+
+
+  await updateDoc(
+    doc(db,"users",currentUser.uid),
+    {
+      username:username,
+      usernameLower:usernameLower,
+      name:name,
+      photo:photo
+    }
+  );
+
+
+  alert("Profile saved successfully!");
+
+  await loadProfile();
+
+};
+
+
+/* LOAD PERSONAS */
+
+function loadPersonas(){
+
+  const q = query(
+    collection(db,"personas"),
+    orderBy("createdAt","desc")
+  );
+
+
+  onSnapshot(q, async(snapshot)=>{
+
+    const box =
+      document.getElementById("personaList");
+
+    box.innerHTML = "";
+
+
+    if(snapshot.empty){
+
+      box.innerHTML = `
+        <div class="card">
+          <h3>No personas yet</h3>
+          <p class="muted">
+            Create your first fictional persona.
+          </p>
+        </div>
+      `;
+
+      return;
+
+    }
+
+
+    for(const item of snapshot.docs){
+
+      const p = item.data();
+
+      const personaId = item.id;
+
+      const likeRef =
+        doc(
+          db,
+          "personas",
+          personaId,
+          "likes",
+          currentUser.uid
+        );
+
+      const followRef =
+        doc(
+          db,
+          "personas",
+          personaId,
+          "followers",
+          currentUser.uid
+        );
+
+
+      const likeSnap = await getDoc(likeRef);
+
+      const followSnap = await getDoc(followRef);
+
+
+      const card =
+        document.createElement("div");
+
+      card.className = "card";
+
+      card.innerHTML = `
+
+        <div class="persona">
+
+          <img
+            src="${escapeHtml(p.photo || "")}"
+            onerror="this.src='https://via.placeholder.com/65'"
+          >
+
+          <div style="flex:1">
+
+            <h2>${escapeHtml(p.name || "")}</h2>
+
+            <p class="muted">
+              @${escapeHtml(p.username || "")}
+            </p>
+
+            <span class="badge">
+              Fictional
+            </span>
+
+            <p>
+              ${escapeHtml(p.bio || "")}
+            </p>
+
+            <div class="actions">
+
+              <button
+                class="white"
+                data-like="${personaId}"
+              >
+                ${likeSnap.exists() ? "❤️ Liked" : "🤍 Like"}
+              </button>
+
+              <button
+                class="white"
+                data-follow="${personaId}"
+              >
+                ${followSnap.exists() ? "Following" : "Follow"}
+              </button>
+
+              <button
+                class="primary"
+                data-chat="${personaId}"
+              >
+                Chat
+              </button>
+
+            </div>
+
+          </div>
+
+        </div>
+      `;
+
+
+      box.appendChild(card);
+
+
+      card
+        .querySelector(`[data-like="${personaId}"]`)
+        .onclick = ()=>toggleLike(personaId,likeSnap.exists());
+
+
+      card
+        .querySelector(`[data-follow="${personaId}"]`)
+        .onclick = ()=>toggleFollow(personaId,followSnap.exists());
+
+
+      card
+        .querySelector(`[data-chat="${personaId}"]`)
+        .onclick = ()=>openChat(personaId,p);
+
+    }
+
+  });
+
+}
+
+
 /* LIKE */
 
-async function toggleLike(
-  personaId,
-  button
-){
+async function toggleLike(personaId,liked){
 
-  const user =
-    auth.currentUser;
-
-  if(!user)return;
-
-
-  const likeRef =
+  const ref =
     doc(
       db,
       "personas",
       personaId,
       "likes",
-      user.uid
+      currentUser.uid
     );
 
 
-  try{
+  if(liked){
 
-    if(button.classList.contains("active")){
+    await deleteDoc(ref);
 
-      await deleteDoc(likeRef);
+  }else{
 
-      button.classList.remove("active");
+    await setDoc(ref,{
 
-      button.textContent =
-        "❤️ Like";
+      uid:currentUser.uid,
+      createdAt:serverTimestamp()
 
-    }else{
-
-      await setDoc(
-        likeRef,
-        {
-          userId:user.uid,
-          createdAt:serverTimestamp()
-        }
-      );
-
-      button.classList.add("active");
-
-      button.textContent =
-        "❤️ Liked";
-
-    }
-
-  }catch(error){
-
-    alert(
-      "Like error: " +
-      error.message
-    );
+    });
 
   }
 
@@ -810,138 +724,371 @@ async function toggleLike(
 
 /* FOLLOW */
 
-async function toggleFollow(
-  personaId,
-  button
-){
+async function toggleFollow(personaId,following){
 
-  const user =
-    auth.currentUser;
-
-  if(!user)return;
-
-
-  const followRef =
+  const ref =
     doc(
       db,
       "personas",
       personaId,
       "followers",
-      user.uid
+      currentUser.uid
     );
 
 
-  try{
+  if(following){
 
-    if(button.classList.contains("active")){
+    await deleteDoc(ref);
 
-      await deleteDoc(followRef);
+  }else{
 
-      button.classList.remove("active");
+    await setDoc(ref,{
 
-      button.textContent =
-        "+ Follow";
+      uid:currentUser.uid,
+      createdAt:serverTimestamp()
 
-    }else{
+    });
 
-      await setDoc(
-        followRef,
-        {
-          userId:user.uid,
-          createdAt:serverTimestamp()
-        }
-      );
+  }
 
-      button.classList.add("active");
+}
 
-      button.textContent =
-        "✓ Following";
+
+/* CREATE PERSONA */
+
+window.createPersona = async function(){
+
+  const name =
+    document.getElementById("personaName")
+      .value.trim();
+
+  const username =
+    document.getElementById("personaUsername")
+      .value.trim();
+
+  const photo =
+    document.getElementById("personaPhoto")
+      .value.trim();
+
+  const bio =
+    document.getElementById("personaBio")
+      .value.trim();
+
+
+  if(!name || !username){
+
+    alert("Name aur username required hai.");
+
+    return;
+
+  }
+
+
+  await addDoc(
+    collection(db,"personas"),
+    {
+
+      name:name,
+
+      username:username
+        .replace(/\s+/g,"")
+        .toLowerCase(),
+
+      photo:photo,
+
+      bio:bio,
+
+      fictional:true,
+
+      ownerId:currentUser.uid,
+
+      createdAt:serverTimestamp()
 
     }
+  );
 
-  }catch(error){
 
-    alert(
-      "Follow error: " +
-      error.message
-    );
+  document.getElementById("personaName").value="";
+  document.getElementById("personaUsername").value="";
+  document.getElementById("personaPhoto").value="";
+  document.getElementById("personaBio").value="";
+
+
+  alert("Fictional persona created!");
+
+  showPage("feed");
+
+};
+
+
+/* CHAT */
+
+window.openChat = function(personaId,p){
+
+  currentPersona = {
+    id:personaId,
+    ...p
+  };
+
+
+  document.getElementById("chatTitle")
+    .textContent = p.name;
+
+
+  document.getElementById("chatModal")
+    .classList.remove("hidden");
+
+
+  loadChat();
+
+};
+
+
+window.closeChat = function(){
+
+  document.getElementById("chatModal")
+    .classList.add("hidden");
+
+  if(unsubscribeChat){
+
+    unsubscribeChat();
+
+    unsubscribeChat=null;
 
   }
+
+  currentPersona=null;
+
+};
+
+
+/* LOAD CHAT */
+
+function loadChat(){
+
+  if(!currentPersona) return;
+
+
+  const messagesRef =
+    collection(
+      db,
+      "personas",
+      currentPersona.id,
+      "chats",
+      currentUser.uid,
+      "messages"
+    );
+
+
+  const q = query(
+    messagesRef,
+    orderBy("createdAt","asc")
+  );
+
+
+  unsubscribeChat =
+    onSnapshot(q,(snapshot)=>{
+
+      const box =
+        document.getElementById("chatMessages");
+
+      box.innerHTML="";
+
+
+      snapshot.forEach((item)=>{
+
+        const m = item.data();
+
+        const div =
+          document.createElement("div");
+
+        div.className =
+          "msg " +
+          (m.sender === "user"
+            ? "me"
+            : "personaMsg");
+
+        div.textContent = m.text;
+
+        box.appendChild(div);
+
+      });
+
+
+      box.scrollTop = box.scrollHeight;
+
+    });
 
 }
 
 
-/* DELETE PERSONA */
+/* SEND MESSAGE */
 
-async function deletePersona(
-  personaId
-){
+window.sendMessage = async function(){
 
-  if(
-    !confirm(
-      "Is persona ko delete karna hai?"
-    )
-  ){
-    return;
-  }
+  if(!currentPersona) return;
 
 
-  try{
+  const input =
+    document.getElementById("chatInput");
 
-    await deleteDoc(
-      doc(
-        db,
-        "personas",
-        personaId
-      )
+  const text =
+    input.value.trim();
+
+
+  if(!text) return;
+
+
+  const messagesRef =
+    collection(
+      db,
+      "personas",
+      currentPersona.id,
+      "chats",
+      currentUser.uid,
+      "messages"
     );
 
-    loadPersonas();
 
-  }catch(error){
+  await addDoc(
+    messagesRef,
+    {
 
-    alert(
-      "Delete error: " +
-      error.message
+      text:text,
+
+      sender:"user",
+
+      createdAt:serverTimestamp()
+
+    }
+  );
+
+
+  input.value="";
+
+
+  /*
+    Simple fictional response.
+    This is clearly a simulation, not a real person.
+  */
+
+  setTimeout(async()=>{
+
+    const replies = [
+
+      "Hey! Nice to hear from you 😊",
+
+      "That's interesting! Tell me more.",
+
+      "Thanks for your message!",
+
+      "Got it 👍",
+
+      "Sounds good!"
+
+    ];
+
+
+    const reply =
+      replies[
+        Math.floor(
+          Math.random()*replies.length
+        )
+      ];
+
+
+    await addDoc(
+      messagesRef,
+      {
+
+        text:reply,
+
+        sender:"persona",
+
+        createdAt:serverTimestamp()
+
+      }
     );
+
+  },700);
+
+};
+
+
+/* PAGE NAVIGATION */
+
+window.showPage = function(page){
+
+  document
+    .getElementById("feedPage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("profilePage")
+    .classList.add("hidden");
+
+  document
+    .getElementById("createPage")
+    .classList.add("hidden");
+
+
+  if(page==="feed"){
+
+    document
+      .getElementById("feedPage")
+      .classList.remove("hidden");
 
   }
 
-}
+  if(page==="profile"){
+
+    document
+      .getElementById("profilePage")
+      .classList.remove("hidden");
+
+  }
+
+  if(page==="create"){
+
+    document
+      .getElementById("createPage")
+      .classList.remove("hidden");
+
+  }
+
+};
 
 
-/* SECURITY: ESCAPE HTML */
+/* ESCAPE HTML */
 
-function escapeHTML(value){
+function escapeHtml(value){
 
-  return String(value)
-    .replaceAll("&","&amp;")
-    .replaceAll("<","&lt;")
-    .replaceAll(">","&gt;")
-    .replaceAll('"',"&quot;")
-    .replaceAll("'","&#039;");
+  return String(value || "")
+    .replace(/&/g,"&amp;")
+    .replace(/</g,"&lt;")
+    .replace(/>/g,"&gt;")
+    .replace(/"/g,"&quot;")
+    .replace(/'/g,"&#039;");
 
 }
 
 
 /* BUTTONS */
 
-loginBtn.addEventListener(
-  "click",
-  login
-);
+document
+  .getElementById("loginBtn")
+  .addEventListener("click",login);
 
-loginMain.addEventListener(
-  "click",
-  login
-);
 
-logoutBtn.addEventListener(
-  "click",
-  logout
-);
+document
+  .getElementById("logoutBtn")
+  .addEventListener("click",async()=>{
+
+    await signOut(auth);
+
+  });
 
 </script>
 
 </body>
-  </html>
+   </html>
